@@ -13,11 +13,11 @@ This repository is a complete collection of all the projects, Jupyter notebooks,
 |---------------------------------------------|----------|-------------------|------------|
 | 1. Welcome to AI Foundations                | ~30 min  | -                 | Completed  |
 | 2. AI Foundations                           | ~40 min  | 100%              | Completed  |
-| 3. Machine Learning Foundations             | ~45 min  | 80%               | Completed  |
+| 3. Machine Learning Foundations             | ~45 min  | 90%               | Completed  |
 | 4. Deep Learning Foundations                | ~27 min  | 100%              | Completed  |
 | 5. Generative AI and LLM Foundations        | ~55 min  | 80%               | Completed  |
 | 6. OCI AI Portfolio                         | ~38 min  | 100%              | Completed  |
-| 7. OCI Generative AI Service                | ~39 min  | 80%               | Completed  |
+| 7. OCI Generative AI Service                | ~39 min  | 100%               | Completed  |
 | 8. OCI AI Services (Language, Speech, Vision, Document Understanding) | ~22 min  | 100%              | Completed  |
 
 **Total Course Time:** ~5 hours 16 minutes  

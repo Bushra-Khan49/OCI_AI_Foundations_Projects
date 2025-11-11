@@ -9,33 +9,43 @@ This repository is a complete collection of all the projects, Jupyter notebooks,
  
 **Status: 100% COMPLETED** as of 11 Nov 2025  
 
-| Module                                      | Status     | Completed On   |
-|---------------------------------------------|------------|----------------|
-| Module 1: Introduction to AI & ML           | Completed  | 6 Nov 2025    |
-| Module 2: Supervised Learning & Neural Networks | Completed  | 6 Nov 2025    |
-| Module 3: Unsupervised Learning & Feature Engineering | Completed  | 7 Nov 2025    |
-| Module 4: Deep Learning & Computer Vision   | Completed  | 8 Nov 2025    |
-| Module 5: NLP + Intro to Generative AI      | Completed  | 10 Nov 2025    |
-| Module 6: Responsible AI & Deployment       | Completed  | 11 Nov 2025    |
+| Module                                      | Duration | Skill Check Score | Status     |
+|---------------------------------------------|----------|-------------------|------------|
+| 1. Welcome to AI Foundations                | ~30 min  | -                 | Completed  |
+| 2. AI Foundations                           | ~40 min  | 100%              | Completed  |
+| 3. Machine Learning Foundations             | ~45 min  | 80%               | Completed  |
+| 4. Deep Learning Foundations                | ~27 min  | 100%              | Completed  |
+| 5. Generative AI and LLM Foundations        | ~55 min  | 80%               | Completed  |
+| 6. OCI AI Portfolio                         | ~38 min  | 100%              | Completed  |
+| 7. OCI Generative AI Service                | ~39 min  | 80%               | Completed  |
+| 8. OCI AI Services (Language, Speech, Vision, Document Understanding) | ~22 min  | 100%              | Completed  |
+
+**Total Course Time:** ~5 hours 16 minutes  
+**All 8 modules completed**  
+**All skill checks passed on first attempt**  
+ 
+### What I Learned & Built
+- Solid foundation in AI, ML, DL, and Generative AI  
+- Hands-on with Jupyter, scikit-learn, MLP, and decision boundary visualization  
+- Deep understanding of Transformers, Prompt Engineering, RAG concepts  
+- Complete overview of OCI AI Infrastructure, Generative AI Service, Language, Speech, Vision, and Document Understanding services
 
 
 ### 2. Oracle Cloud Infrastructure Generative AI Professional (2025)  
-Starting 12 Nov 2025  
 
-| Module                                      | Status  |
-|---------------------------------------------|---------|
-| Introduction to Generative AI & LLMs        | Pending |
-| Prompt Engineering (Basic + Advanced)       | Pending |
-| Retrieval-Augmented Generation (RAG)        | Pending |
-| Fine-tuning & Custom Models                 | Pending |
-| OCI Generative AI Service Deep Dive         | Pending |
-| Building Chatbots & Agents                  | Pending |
-| Evaluation, Safety & Guardrails             | Pending |
-| Deployment & Monitoring                     | Pending |
+**Status:** Starting 12 Nov 2025  
 
-All projects are built purely from the official course content and labs, executed locally using Python, scikit-learn, matplotlib, pandas, etc. — no OCI cloud services used.
+| Module                                                                 | Duration | Status         | Skill Check |
+|-----------------------------------------------------------------------|----------|----------------|-------------|
+| 1. Course Overview                                                    | 9m       | Completed      | -           |
+| 2. Fundamentals of Large Language Models                             | ~62m     | Completed      | 80%+ Needed (Not attempted yet) |
+| 3. OCI Generative AI Service                                          | ~135m    | In Progress    | Not attempted |
+| 4. RAG using Generative AI service and Oracle 23ai Vector Search      | ~48m     | Pending        | Not attempted |
+| 5. Chatbot using Generative AI Agent service                         | ~51m     | Pending        | Not attempted |
 
-Every notebook is clean, well-commented, and ready to run.
+**Target:** Complete entire Generative AI Professional course.
+
+All notebooks, scripts, and projects from both certifications are uploaded here as I complete them — clean, well-commented, and ready to run locally (Python + Jupyter).
 
 More projects coming every week as I progress through both certifications.
 

@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Environments
+.env
+.venv
+venv/
+
+# Downloaded raw data (regenerate via data/download_data.py; not redistributed here)
+02_gene_expression_classification/data/leukemia_clean.csv
+02_gene_expression_classification/data/*.csv
+
+# NOTE: results/ (plots, metrics.json, and the small .joblib model in
+# Project 1) is intentionally NOT ignored. It's committed so the repo shows
+# actual output without requiring anyone to re-run anything first.
+
+# OS
+.DS_Store

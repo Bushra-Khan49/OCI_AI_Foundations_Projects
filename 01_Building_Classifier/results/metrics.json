@@ -1,0 +1,46 @@
+{
+  "dataset": {
+    "generator": "sklearn.datasets.make_circles",
+    "n_samples": 300,
+    "noise": 0.05,
+    "factor": 0.5
+  },
+  "split": {
+    "test_size": 0.3,
+    "random_state": 0,
+    "stratify": true
+  },
+  "baseline_logistic_regression_test_accuracy": 0.45555555555555555,
+  "hidden_layer_sweep": [
+    {
+      "hidden_layer_size": 1,
+      "test_accuracy": 0.5
+    },
+    {
+      "hidden_layer_size": 2,
+      "test_accuracy": 0.5222222222222223
+    },
+    {
+      "hidden_layer_size": 3,
+      "test_accuracy": 0.6777777777777778
+    },
+    {
+      "hidden_layer_size": 5,
+      "test_accuracy": 1.0
+    },
+    {
+      "hidden_layer_size": 10,
+      "test_accuracy": 1.0
+    },
+    {
+      "hidden_layer_size": 20,
+      "test_accuracy": 1.0
+    },
+    {
+      "hidden_layer_size": 50,
+      "test_accuracy": 1.0
+    }
+  ],
+  "best_hidden_layer_size": 5,
+  "best_test_accuracy": 1.0
+}

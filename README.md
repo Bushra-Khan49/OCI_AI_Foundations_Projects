@@ -1,54 +1,59 @@
-# OCI_AI_Foundations_Projects
+# OCI AI Foundations — Projects
 
-### My Oracle Cloud Infrastructure AI Certification Journey (2025–2026)  
-**Learning in Public • Hands-On Projects • India**
+Hands-on machine learning projects built while working through the Oracle
+Cloud Infrastructure (OCI) AI Foundations Associate course. Each project
+takes a concept from the course and extends it into an actual, evaluated,
+reproducible experiment — not just a completed exercise.
 
-This repository is a complete collection of all the projects, Jupyter notebooks, and code I am building while pursuing two official Oracle certifications:
+## Projects
 
-### 1. Oracle Cloud Infrastructure AI Foundations Associate (2025)  
- 
-**Status: 100% COMPLETED** as of 11 Nov 2025  
+| # | Project | Question | Key result |
+|---|---|---|---|
+| 1 | [Linear vs. MLP on `make_circles`](01_Building_Classifier/) | Does a linear model actually fail on non-linear synthetic data, and does a small neural net actually fix it? | Logistic Regression: 0.456 test accuracy. MLP (≥5 hidden neurons): 1.000. |
+| 2 | [Gene expression classification (Golub leukemia)](02_gene_expression_classification/) | Does the same linear-vs-non-linear finding hold on real, high-dimensional (p≫n) biological data? | See project README — run `train_eval.py` to reproduce; results are not assumed to favor either model. |
 
-| Module                                      | Duration | Skill Check Score | Status     |
-|---------------------------------------------|----------|-------------------|------------|
-| 1. Welcome to AI Foundations                | ~30 min  | -                 | Completed  |
-| 2. AI Foundations                           | ~40 min  | 100%              | Completed  |
-| 3. Machine Learning Foundations             | ~45 min  | 90%               | Completed  |
-| 4. Deep Learning Foundations                | ~27 min  | 100%              | Completed  |
-| 5. Generative AI and LLM Foundations        | ~55 min  | 80%               | Completed  |
-| 6. OCI AI Portfolio                         | ~38 min  | 100%              | Completed  |
-| 7. OCI Generative AI Service                | ~39 min  | 100%               | Completed  |
-| 8. OCI AI Services (Language, Speech, Vision, Document Understanding) | ~22 min  | 100%              | Completed  |
+More projects will be added here as they're completed, each following the
+same structure: a stated question, a real evaluation, and saved results.
 
-**Total Course Time:** ~5 hours 16 minutes  
-**All 8 modules completed**  
-**All skill checks passed on first attempt**  
- 
-### What I Learned & Built
-- Solid foundation in AI, ML, DL, and Generative AI  
-- Hands-on with Jupyter, scikit-learn, MLP, and decision boundary visualization  
-- Deep understanding of Transformers, Prompt Engineering, RAG concepts  
-- Complete overview of OCI AI Infrastructure, Generative AI Service, Language, Speech, Vision, and Document Understanding services
+## Repository structure
 
+Each project is self-contained:
+```
+<NN>_project_name/
+  README.md            <- question, method, results, how to reproduce
+  *.ipynb               <- interactive notebook version
+  *.py                  <- CLI script version (no notebook required)
+  requirements.txt       <- project-specific dependencies
+  data/                  <- present only if the project needs external data
+  results/               <- metrics.json + plots, committed as proof of output
+```
 
-### 2. Oracle Cloud Infrastructure Generative AI Professional (2025)  
+## Setup
 
-**Status:** Starting 12 Nov 2025  
+Using conda (recommended, covers all projects):
+```bash
+conda env create -f environment.yml
+conda activate oci-ai-foundations
+```
 
-| Module                                                                 | Duration | Status         | Skill Check |
-|-----------------------------------------------------------------------|----------|----------------|-------------|
-| 1. Course Overview                                                    | 9m       | Completed      | -           |
-| 2. Fundamentals of Large Language Models                             | ~62m     | Completed      | 80%+ Needed (Not attempted yet) |
-| 3. OCI Generative AI Service                                          | ~135m    | In Progress    | Not attempted |
-| 4. RAG using Generative AI service and Oracle 23ai Vector Search      | ~48m     | Pending        | Not attempted |
-| 5. Chatbot using Generative AI Agent service                         | ~51m     | Pending        | Not attempted |
+Or, per-project, with pip:
+```bash
+cd 01_Building_Classifier
+pip install -r requirements.txt
+```
 
-**Target:** Complete entire Generative AI Professional course.
+Then either open the `.ipynb` in Jupyter, or run the `.py` script directly —
+see each project's README for exact commands.
 
-All notebooks, scripts, and projects from both certifications are uploaded here as I complete them — clean, well-commented, and ready to run locally (Python + Jupyter).
+## Course background
 
-More projects coming every week as I progress through both certifications.
+These projects were built alongside the **Oracle Cloud Infrastructure (OCI)
+AI Foundations Associate** certification (completed November 2025), covering
+AI/ML/DL foundations, generative AI and LLM concepts, and the OCI AI service
+portfolio (Language, Speech, Vision, Document Understanding). Currently
+extending into the **OCI Generative AI Professional** track (RAG with Oracle
+23ai Vector Search, Generative AI Agents).
 
-#OCIAIFoundations #OCIGenerativeAI #MachineLearning #NeuralNetworks #GenerativeAI #Python #Bioinformatics #WomenInTech #LearningInPublic
+## License
 
-
+MIT — see [LICENSE](LICENSE).

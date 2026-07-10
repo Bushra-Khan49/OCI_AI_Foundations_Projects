@@ -1,21 +1,21 @@
 """
 download_data.py
 
-Downloads the Golub et al. (1999) leukemia gene expression dataset
-(AML vs. ALL) from Stanford's CASI book data page and saves a clean,
-sklearn-ready CSV locally.
+In this script, I download the seminal Golub et al. (1999) leukemia gene expression dataset 
+(AML vs. ALL). This dataset proved that cancer could be classified purely by gene expression profiles 
+without prior biological knowledge. It remains a gold standard for testing algorithms in high-dimensional biological data.
 
 Source: http://hastie.su.domains/CASI_files/DATA/leukemia_small.csv
 Citation: Golub TR, Slonim DK, Tamayo P, et al. "Molecular classification
 of cancer: class discovery and class prediction by gene expression
 monitoring." Science. 1999 Oct 15;286(5439):531-7.
-Republished by Efron & Hastie in "Computer Age Statistical Inference" (CASI).
+Republished by Bradley Efron and Trevor Hastie in "Computer Age Statistical Inference" (Cambridge University Press, 2016), page 213.
 
-Raw file format (confirmed by inspection):
-  - Row 1: 72 comma-separated class labels ("ALL" or "AML"), one per sample
-  - Rows 2-3572: 3571 genes, each row has 72 expression values (one per sample)
-  i.e. the raw file is (genes x samples). We transpose it to the standard
-  (samples x genes) orientation expected by scikit-learn before saving.
+When I inspect the raw file format directly from the URL, I can see how biological data was typically stored:
+  - Row 1: Contains 72 comma-separated class labels ("ALL" or "AML"), representing our 72 patients.
+  - Rows 2 to 3572: Each row represents one of 3571 genes, and contains 72 expression values (one for each patient).
+
+Because the raw file is formatted as (genes x patients), I transpose it into the standard (patients x genes) orientation expected by modern machine learning libraries like scikit-learn, and save it as a clean CSV for the next steps.
 
 Usage:
     python download_data.py                       # saves to ./leukemia_clean.csv

@@ -1,0 +1,55 @@
+# Results, Interpretations, and Conclusions
+
+This document summarizes the findings from the gene expression classification pipeline on the Golub et al. (1999) leukemia dataset.
+
+## 1. PCA Projection Interpretation
+
+![PCA Projection](pca_projection.png)
+
+Because of human limitations, we cannot visually perceive 3,571 dimensions. PCA was used to compress all 3,571 genes down to 2 dimensions for visual inspection.
+
+Looking at the resulting PCA projection plot, we can see that the ALL (blue) and AML (orange) patients form somewhat distinct clusters, but there is noticeable overlap in the center. 
+
+**Interpretation:**
+- There is a genuine, strong biological signal separating the two leukemias (the points aren't completely random noise).
+- The classes are not trivially separable with a single straight line in 2D space. A machine learning model will need to leverage the higher-dimensional gene interactions to accurately separate the patients.
+
+## 2. Model Comparison Results
+
+![Model Comparison](model_comparison.png)
+
+We evaluated four models using stratified 5-fold cross-validation. Feature selection (keeping the top 50 genes via ANOVA F-test) was strictly performed *inside* the cross-validation loop to prevent information leakage.
+
+| Model | Mean Accuracy | Standard Deviation |
+| :--- | :--- | :--- |
+| **Logistic Regression (linear)** | 0.971 | +/- 0.057 |
+| **Linear SVM** | 0.957 | +/- 0.057 |
+| **RBF SVM (non-linear)** | 0.971 | +/- 0.057 |
+| **MLP, 1 hidden layer of 10 (non-linear)** | 0.944 | +/- 0.053 |
+
+**Majority-class baseline:** 0.652 +/- 0.012
+
+**Interpretation:**
+As anticipated, in this high-dimensional $p \gg n$ setting (3,571 genes vs. 72 patients), the linear models (Logistic Regression, Linear SVM) perform just as well as, or slightly better than, the complex non-linear models (MLP). The neural network shows higher variance and lower mean accuracy because its excess capacity makes it prone to overfitting the small sample size.
+
+## 3. Metrics Serialization (`metrics.json`)
+
+To ensure full reproducibility, the entire configuration and statistical output of the run is serialized to `metrics.json`.
+
+**What `metrics.json` contains:**
+- **`dataset`**: Metadata about the dataset used, including the source URL, number of samples (72), total genes (3571), the number of genes selected per fold (50), and the class balance (47 ALL, 25 AML).
+- **`cv`**: The cross-validation parameters used (5 splits, shuffled, with a fixed random state).
+- **`majority_class_baseline_accuracy`**: The exact mean and standard deviation of a dummy classifier that always guesses the majority class.
+- **`model_comparison`**: A detailed breakdown of every model tested, including its mean accuracy, standard deviation, and the raw accuracy score for every single fold in the cross-validation.
+
+By saving this, we guarantee that the experiment is fully documented and that these metrics can be programmatically compared against future models without having to rerun the entire pipeline.
+
+## 4. Final Conclusion
+
+By comparing the models on the Golub 1999 dataset, we successfully demonstrated that **non-linearity is not a silver bullet in machine learning.** 
+
+While Project 1 proved that a simple linear model fails catastrophically on the 2D synthetic `make_circles` dataset, this project proves the opposite for biological data. When faced with high-dimensional data ($p \gg n$), the excess capacity of the Multi-Layer Perceptron (neural network) caused it to overfit the small sample size (72 patients), resulting in lower mean accuracy.
+
+Conversely, the simpler, highly-constrained linear models (Logistic Regression and Linear SVM) were able to robustly capture the true biological signal, generalizing better and achieving higher mean accuracy. 
+
+**Key Takeaway:** Always match the complexity of your model to the geometry and dimensionality of your data. For many high-dimensional bioinformatics tasks, a heavily regularized linear model remains the gold standard.

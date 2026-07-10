@@ -23,7 +23,11 @@ In these scenarios, complex deep learning models memorize the tiny sample set in
 
 1. **Baseline:** majority-class ("always predict ALL") accuracy via 5-fold CV — the floor every real model has to beat.
 2. **PCA** to 2D, purely for visual inspection of class separation — not used for modeling. *Context:* Because of human limitations, we cannot visually perceive 3,571 dimensions. PCA is a deterministic, standard linear projection that captures maximum variance without requiring hyperparameter tuning.
-   - **PCA Projection Interpretation:** In the resulting plot (`results/pca_projection.png`), the ALL and AML patients form distinct clusters but overlap in the center. This indicates that while there is strong biological signal separating the leukemias, they aren't trivially separable in 2D space. The models must leverage higher-dimensional space.
+   - **PCA Projection Interpretation:**
+
+     ![PCA Projection](results/pca_projection.png)
+
+     In the resulting plot, the ALL and AML patients form distinct clusters but overlap in the center. This indicates that while there is strong biological signal separating the leukemias, they aren't trivially separable in 2D space. The models must leverage higher-dimensional space.
 3. **Feature selection:** top genes by ANOVA F-test, done **inside** the cross-validation loop (via an sklearn `Pipeline`), not before it. *Context:* As taught in standard ML curriculums (like Kaggle's Intro to ML), feature selection *must* happen inside the loop. Fitting feature selection on the full dataset before splitting gives the training phase an unfair "sneak peek" at the validation cohort, which is a classic information leak.
 4. **Models compared** (all with identical preprocessing to ensure apples-to-apples architectural comparison):
    - Logistic Regression (linear)

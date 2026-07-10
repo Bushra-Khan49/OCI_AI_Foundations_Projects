@@ -4,25 +4,35 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "# Project 2: Gene Expression Classification (Golub Leukemia Dataset)\n",
+    "# Gene Expression Classification: Does Non-Linearity Actually Help on Real Biological Data?\n",
     "\n",
-    "While Project 1 demonstrated that neural networks easily map non-linear spaces where linear models fail, biological data often presents the exact opposite challenge.\n",
+    "**Project 2 \u2014 follow-on from Project 1, testing the same question on real data.**\n",
     "\n",
-    "In this project, I use the seminal **Golub et al. (1999)** leukemia gene expression dataset to compare linear and non-linear classifiers. This dataset is a historical gold standard: it proved for the first time that cancer could be classified purely by gene expression profiles (without relying on prior biological knowledge) using a weighted voting scheme that effectively acted as a linear classifier.\n",
+    "Project 1 showed that a linear model fails and a small neural network succeeds\n",
+    "on `make_circles` \u2014 clean, synthetic, low-dimensional data. This notebook asks\n",
+    "the same question on the dataset that motivated the field: **Golub et al.\n",
+    "(1999)**, gene expression profiles from 72 leukemia patients, used to\n",
+    "distinguish Acute Lymphoblastic Leukemia (ALL) from Acute Myeloid Leukemia\n",
+    "(AML).\n",
     "\n",
-    "**Why does this matter today?**\n",
-    "Even with advanced AI, we frequently encounter $p \\gg n$ datasets in bioinformatics, where the number of features (genes, proteins, biomarkers) vastly outnumbers the samples (patients). For example:\n",
-    "1. **Rare Disease Biomarker Discovery:** We might sequence 20,000 genes for a rare disease cohort of only 15 patients.\n",
-    "2. **Personalized Medicine Clinical Trials:** We might have high-resolution proteomic profiles for 50 patients in a trial.\n",
+    "The twist: here we have **72 samples and 3,571 features** \u2014 the opposite\n",
+    "regime of `make_circles`. This is where the naive \"just add a neural net\"\n",
+    "intuition gets tested against a real constraint: with more features than\n",
+    "samples, almost any model can perfectly fit the training data. The interesting\n",
+    "question is what happens on held-out patients.\n",
     "\n",
-    "In these scenarios, complex deep learning models are highly prone to overfitting\u2014they memorize the tiny sample set instead of learning biological signals. As a bioinformatician, understanding why classical linear models often outperform neural networks in high-dimensional biological data is a critical lesson in model selection."
+    "**Dataset:** Golub TR, Slonim DK, Tamayo P, et al. \"Molecular classification\n",
+    "of cancer: class discovery and class prediction by gene expression\n",
+    "monitoring.\" *Science*. 1999;286(5439):531-7.\n",
+    "Data source: http://hastie.su.domains/CASI_files/DATA/leukemia_small.csv\n",
+    "(republished by Efron & Hastie, CASI book data page).\n"
    ]
   },
   {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "First, I import the necessary libraries for data processing, machine learning pipelines, and visualization."
+    "## Step 1: Imports and setup"
    ]
   },
   {
@@ -57,9 +67,12 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "I load the cleaned dataset. It contains 72 patients (our samples) and 3,571 genes (our features), labeled as either ALL or AML leukemia.\n",
+    "## Step 2: Load the data\n",
     "\n",
-    "Before training any model, I establish a 'dummy' baseline. This model simply guesses the most frequent class (ALL) every single time. It achieves about 65% accuracy. This establishes the absolute minimum floor that a real model has to beat to prove it is learning actual biological signals."
+    "Run `python data/download_data.py` first (from this project folder) to\n",
+    "produce `data/leukemia_clean.csv`. That script downloads the raw Golub\n",
+    "dataset and transposes it into the standard (samples x genes) orientation\n",
+    "with a `label` column.\n"
    ]
   },
   {
@@ -88,12 +101,11 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "Because of human limitations, we can only visually perceive up to 3 dimensions. We cannot plot 3,571 genes on a graph.\n",
+    "## Step 3: Baseline \u2014 what does \"guessing the majority class\" get you?\n",
     "\n",
-    "To overcome this, I use Principal Component Analysis (PCA) to compress all 3,571 genes down to 2 dimensions. PCA is a standard, deterministic mathematical projection that captures the maximum variance in the data without requiring hyperparameter tuning (unlike t-SNE or UMAP). \n",
-    "\n",
-    "I do this purely for a visual sanity check to see if the ALL and AML patients naturally cluster apart based on their gene expressions. I do not train the models on this 2D data.",
-    "\n\n![PCA Projection](results/pca_projection.png)\n"
+    "With 72 samples and imbalanced classes (47 ALL / 25 AML), a trivial\n",
+    "always-predict-ALL classifier already scores ~65%. Any model we build has to\n",
+    "beat this by a meaningful margin to mean anything."
    ]
   },
   {
@@ -112,15 +124,11 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "Now, I compare a suite of linear models (Logistic Regression, Linear SVM) against non-linear models (RBF SVM, MLP Neural Network).\n",
+    "## Step 4: PCA \u2014 visualize the high-dimensional structure\n",
     "\n",
-    "**Identical Preprocessing & Information Leaks**\n",
-    "To ensure a fair, apples-to-apples comparison, I use a scikit-learn `Pipeline`. This guarantees that every model receives the exact same standard scaling and feature selection steps (keeping the top 50 genes via ANOVA F-test). We are comparing the models themselves, not the way the data was prepared for them.\n",
-    "\n",
-    "Crucially, as taught in standard Machine Learning curriculums (such as the Kaggle Intro to ML course), feature selection MUST happen *inside* the cross-validation loop. If I filtered the top 50 genes using the entire 72 patients before splitting the data, the training phase would get an unfair 'sneak peek' at the validation cohort. This is a classic information leak that artificially inflates accuracy.\n",
-    "\n",
-    "**5-Fold Cross-Validation**\n",
-    "Because I only have 72 samples, a single train/validation split would leave only ~21 patients for testing\u2014far too few for a reliable metric. Instead, I use 5-fold cross validation. This splits the data into 5 chunks, training on 4 and testing on 1, rotating until every patient has been in the unseen validation cohort exactly once."
+    "With 3,571 genes and 72 samples, we can't plot the raw feature space. PCA\n",
+    "gives a 2D projection to see whether the two classes separate at all before\n",
+    "we commit to any model."
    ]
   },
   {
@@ -152,12 +160,14 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "I visualize the cross-validation accuracy of the models using a bar chart.\n",
+    "## Step 5: Feature selection\n",
     "\n",
-    "As anticipated, in this high-dimensional $p \\gg n$ setting, the linear models (Logistic Regression, Linear SVM) perform just as well as, or slightly better than, the complex non-linear models (MLP). The neural network shows higher variance (wider error bars) and lower mean accuracy because its excess capacity makes it prone to overfitting the 72 samples.\n",
-    "\n",
-    "This directly mirrors the significance of Golub et al.'s original 1999 findings: linear boundaries are highly effective for gene expression classification. Even today, non-linearity is not a silver bullet in bioinformatics.",
-    "\n\n![Model Comparison](results/model_comparison.png)\n"
+    "3,571 genes for 72 samples is a severe case of p >> n. Without reducing\n",
+    "dimensionality first, any classifier can trivially memorize the training set.\n",
+    "We use univariate F-test feature selection (ANOVA) **inside** the\n",
+    "cross-validation pipeline (not before it) so that no information from the\n",
+    "test fold leaks into feature selection \u2014 a common and easy-to-miss mistake\n",
+    "with high-dimensional biological data."
    ]
   },
   {
@@ -180,7 +190,12 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## Step 6: Linear vs. non-linear models, compared with 5-fold cross-validation\n\n72 samples is too small to trust a single train/test split (Project 1 used\none split because `make_circles` is easy; here we can't get away with that).\nWe use stratified 5-fold CV and report mean +/- std accuracy for each model,\nall built on the *same* feature-selection pipeline so the comparison is fair.\n"
+    "## Step 6: Linear vs. non-linear models, compared with 5-fold cross-validation\n",
+    "\n",
+    "72 samples is too small to trust a single train/test split (Project 1 used\n",
+    "one split because `make_circles` is easy; here we can't get away with that).\n",
+    "We use stratified 5-fold CV and report mean +/- std accuracy for each model,\n",
+    "all built on the *same* feature-selection pipeline so the comparison is fair.\n"
    ]
   },
   {
@@ -240,16 +255,26 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## Step 8: Interpretation\n\nUnlike `make_circles`, the honest expectation here is that **the linear\nmodels do about as well as, or better than, the non-linear ones** \u2014 with only\n72 samples and heavy feature selection, there usually isn't enough data for a\nneural network's extra flexibility to pay off, and it can even overfit faster\nthan the linear alternatives. Whatever the actual numbers turn out to be when\nyou run this, that comparison \u2014 not an assumed win for neural networks \u2014 is\nthe real finding. Fill in the two-sentence summary below after running the\ncells above:\n\n> Fastest-to-slowest by mean CV accuracy: `<fill in after running>`.\n> Margin over the majority-class baseline: `<fill in after running>`.\n"
+    "## Step 8: Interpretation\n",
+    "\n",
+    "Unlike `make_circles`, the honest expectation here is that **the linear\n",
+    "models do about as well as, or better than, the non-linear ones** \u2014 with only\n",
+    "72 samples and heavy feature selection, there usually isn't enough data for a\n",
+    "neural network's extra flexibility to pay off, and it can even overfit faster\n",
+    "than the linear alternatives. Whatever the actual numbers turn out to be when\n",
+    "you run this, that comparison \u2014 not an assumed win for neural networks \u2014 is\n",
+    "the real finding. Fill in the two-sentence summary below after running the\n",
+    "cells above:\n",
+    "\n",
+    "> Fastest-to-slowest by mean CV accuracy: `<fill in after running>`.\n",
+    "> Margin over the majority-class baseline: `<fill in after running>`.\n"
    ]
   },
   {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## Step 9: Save all results to disk\n",
-    "\n",
-    "Why is this step important? In any data science pipeline, generating a plot in a Jupyter notebook isn't enough. We must serialize the exact hyperparameter configurations, the cross-validation splits, and the final metrics to a JSON file on disk. This ensures that the experiment is fully reproducible for future reference and that these metrics can be programmatically compared against future models without having to rerun the entire training pipeline."
+    "## Step 9: Save all results to disk"
    ]
   },
   {
@@ -278,21 +303,6 @@
     "    json.dump(summary, f, indent=2)\n",
     "\n",
     "print(json.dumps(summary, indent=2))\n"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "## Step 10: Final Conclusion\n",
-    "\n",
-    "By comparing the models on the Golub 1999 dataset, we successfully demonstrated that **non-linearity is not a silver bullet in machine learning.** \n",
-    "\n",
-    "While Project 1 proved that a simple linear model fails catastrophically on the 2D `make_circles` dataset, this project proves the opposite for biological data. When faced with high-dimensional data ($p \\gg n$), the excess capacity of the Multi-Layer Perceptron (neural network) caused it to overfit the small sample size (72 patients), resulting in higher variance across folds.\n",
-    "\n",
-    "Conversely, the simpler, highly-constrained linear models (Logistic Regression and Linear SVM) were able to robustly capture the true biological signal, generalizing better and achieving higher mean accuracy. \n",
-    "\n",
-    "**Key Takeaway:** Always match the complexity of your model to the geometry and dimensionality of your data. For many high-dimensional bioinformatics tasks, a heavily regularized linear model remains the gold standard."
    ]
   }
  ],

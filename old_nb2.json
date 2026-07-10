@@ -92,8 +92,7 @@
     "\n",
     "To overcome this, I use Principal Component Analysis (PCA) to compress all 3,571 genes down to 2 dimensions. PCA is a standard, deterministic mathematical projection that captures the maximum variance in the data without requiring hyperparameter tuning (unlike t-SNE or UMAP). \n",
     "\n",
-    "I do this purely for a visual sanity check to see if the ALL and AML patients naturally cluster apart based on their gene expressions. I do not train the models on this 2D data.",
-    "\n\n![PCA Projection](results/pca_projection.png)\n"
+    "I do this purely for a visual sanity check to see if the ALL and AML patients naturally cluster apart based on their gene expressions. I do not train the models on this 2D data."
    ]
   },
   {
@@ -156,8 +155,7 @@
     "\n",
     "As anticipated, in this high-dimensional $p \\gg n$ setting, the linear models (Logistic Regression, Linear SVM) perform just as well as, or slightly better than, the complex non-linear models (MLP). The neural network shows higher variance (wider error bars) and lower mean accuracy because its excess capacity makes it prone to overfitting the 72 samples.\n",
     "\n",
-    "This directly mirrors the significance of Golub et al.'s original 1999 findings: linear boundaries are highly effective for gene expression classification. Even today, non-linearity is not a silver bullet in bioinformatics.",
-    "\n\n![Model Comparison](results/model_comparison.png)\n"
+    "This directly mirrors the significance of Golub et al.'s original 1999 findings: linear boundaries are highly effective for gene expression classification. Even today, non-linearity is not a silver bullet in bioinformatics."
    ]
   },
   {
@@ -247,9 +245,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## Step 9: Save all results to disk\n",
-    "\n",
-    "Why is this step important? In any data science pipeline, generating a plot in a Jupyter notebook isn't enough. We must serialize the exact hyperparameter configurations, the cross-validation splits, and the final metrics to a JSON file on disk. This ensures that the experiment is fully reproducible for future reference and that these metrics can be programmatically compared against future models without having to rerun the entire training pipeline."
+    "## Step 9: Save all results to disk"
    ]
   },
   {
@@ -278,21 +274,6 @@
     "    json.dump(summary, f, indent=2)\n",
     "\n",
     "print(json.dumps(summary, indent=2))\n"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "## Step 10: Final Conclusion\n",
-    "\n",
-    "By comparing the models on the Golub 1999 dataset, we successfully demonstrated that **non-linearity is not a silver bullet in machine learning.** \n",
-    "\n",
-    "While Project 1 proved that a simple linear model fails catastrophically on the 2D `make_circles` dataset, this project proves the opposite for biological data. When faced with high-dimensional data ($p \\gg n$), the excess capacity of the Multi-Layer Perceptron (neural network) caused it to overfit the small sample size (72 patients), resulting in higher variance across folds.\n",
-    "\n",
-    "Conversely, the simpler, highly-constrained linear models (Logistic Regression and Linear SVM) were able to robustly capture the true biological signal, generalizing better and achieving higher mean accuracy. \n",
-    "\n",
-    "**Key Takeaway:** Always match the complexity of your model to the geometry and dimensionality of your data. For many high-dimensional bioinformatics tasks, a heavily regularized linear model remains the gold standard."
    ]
   }
  ],

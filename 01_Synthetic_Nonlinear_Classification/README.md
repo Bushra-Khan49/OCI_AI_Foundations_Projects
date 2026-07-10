@@ -35,6 +35,7 @@ In this project, I explore a classic problem in machine learning: understanding 
 
 ![accuracy vs hidden size](results/accuracy_vs_hidden_size.png)
 ![decision boundary](results/decision_boundary.png)
+![interactive decision boundary](results/interactive_decision_boundary.png)
 
 **Finding:** The linear model performs at essentially chance level (its accuracy is not meaningfully above 0.5 given only 90 test points), while the MLP needs as few as 5 hidden neurons to separate the classes perfectly on held-out data. This is the concrete evidence for the qualitative claim the exercise is built around, rather than an assertion.
 

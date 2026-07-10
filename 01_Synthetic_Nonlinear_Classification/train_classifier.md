@@ -1,5 +1,5 @@
-"""
-train_classifier.py
+# Train Classifier (train_classifier.py)
+
 
 Standalone, reproducible version of the make_circles classification experiment.
 Unlike the original version, this script:
@@ -14,8 +14,9 @@ and demonstrate how introducing a simple Multi-Layer Perceptron (MLP) neural net
 Usage:
     python train_classifier.py
     python train_classifier.py --hidden-sizes 1 5 10 20 50 --noise 0.05 --results-dir results
-"""
 
+
+```python
 import argparse
 import json
 from pathlib import Path
@@ -53,36 +54,52 @@ def main():
     results_dir = Path(args.results_dir)
     results_dir.mkdir(parents=True, exist_ok=True)
 
-    # 1. Generating Data
-    # make_circles generates data points in the shape of two interlocking, concentric circles.
-    # By design, you cannot draw a single straight line to separate the inner circle from the outer one.
+```
+
+## 1. Generating Data
+make_circles generates data points in the shape of two interlocking, concentric circles.
+By design, you cannot draw a single straight line to separate the inner circle from the outer one.
+
+```python
     print("Generating dataset...")
     X, y = make_circles(
         n_samples=args.n_samples, noise=args.noise, factor=args.factor,
         random_state=args.random_state,
     )
     
-    # 2. Validation Cohort
-    # I hold out a portion of this data as a validation cohort. 
-    # Evaluating a model on the same data it learned from leads to a false sense of security due to overfitting.
+```
+
+## 2. Validation Cohort
+I hold out a portion of this data as a validation cohort.
+Evaluating a model on the same data it learned from leads to a false sense of security due to overfitting.
+
+```python
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=args.test_size, random_state=args.random_state, stratify=y,
     )
     print(f"Train: {len(X_train)} samples | Test: {len(X_test)} samples")
 
-    # 3. Linear Baseline
-    # I fit a standard Logistic Regression baseline. Logistic Regression attempts to find 
-    # a linear decision boundary (a flat plane). 
+```
+
+## 3. Linear Baseline
+I fit a standard Logistic Regression baseline. Logistic Regression attempts to find
+a linear decision boundary (a flat plane).
+
+```python
     print("\nFitting linear baseline (LogisticRegression)...")
     baseline = LogisticRegression()
     baseline.fit(X_train, y_train)
     baseline_acc = accuracy_score(y_test, baseline.predict(X_test))
     print(f"  Baseline test accuracy: {baseline_acc:.3f}")
 
-    # 4. MLP Sweep
-    # Next, I introduce an MLP neural network. I sweep through different hidden layer sizes 
-    # to observe how adding capacity allows the network to combine multiple flat boundaries 
-    # into a smooth, curved shape. Both models use the exact same validation splits for a fair comparison.
+```
+
+## 4. MLP Sweep
+Next, I introduce an MLP neural network. I sweep through different hidden layer sizes
+to observe how adding capacity allows the network to combine multiple flat boundaries
+into a smooth, curved shape. Both models use the exact same validation splits for a fair comparison.
+
+```python
     print("\nSweeping MLP hidden layer size...")
     sweep_results = []
     best_clf, best_acc, best_h = None, -1.0, None
@@ -99,7 +116,11 @@ def main():
     print("\nClassification report for best model:")
     print(classification_report(y_test, best_clf.predict(X_test)))
 
-    # --- Plot 1: accuracy vs. hidden layer size ---
+```
+
+## Plot 1: accuracy vs. hidden layer size
+
+```python
     sizes = [r["hidden_layer_size"] for r in sweep_results]
     accs = [r["test_accuracy"] for r in sweep_results]
     fig, ax = plt.subplots(figsize=(6, 4))
@@ -114,9 +135,13 @@ def main():
     fig.savefig(results_dir / "accuracy_vs_hidden_size.png", dpi=150)
     plt.close(fig)
 
-    # --- Plot 2: decision boundary for the best model ---
-    # By mapping a grid of points and plotting the best model's predictions, 
-    # we can visually see the exact non-linear shape it learned. 
+```
+
+## Plot 2: decision boundary for the best model
+By mapping a grid of points and plotting the best model's predictions,
+we can visually see the exact non-linear shape it learned.
+
+```python
     x_vals = np.linspace(X[:, 0].min() - 0.1, X[:, 0].max() + 0.1, 200)
     y_vals = np.linspace(X[:, 1].min() - 0.1, X[:, 1].max() + 0.1, 200)
     X_plane, Y_plane = np.meshgrid(x_vals, y_vals)
@@ -133,7 +158,11 @@ def main():
     fig.savefig(results_dir / "decision_boundary.png", dpi=150)
     plt.close(fig)
 
-    # --- Save model + metrics ---
+```
+
+## Save model + metrics
+
+```python
     joblib.dump(best_clf, results_dir / "best_mlp_model.joblib")
 
     metrics = {
@@ -155,3 +184,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+```

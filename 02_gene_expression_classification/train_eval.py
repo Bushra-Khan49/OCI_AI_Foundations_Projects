@@ -17,6 +17,11 @@ Usage:
     python train_eval.py --n-features 100 --n-splits 10 --results-dir results
 """
 
+# ==============================================================================
+# Step 1: Import libraries and setup CLI
+# First, I import the necessary libraries for data processing, machine learning 
+# pipelines, and visualization.
+# ==============================================================================
 import argparse
 import json
 from pathlib import Path
@@ -59,7 +64,16 @@ def main():
             f"{data_path} not found. Run `python data/download_data.py` first."
         )
 
-    # I load the cleaned CSV file. It has 72 rows (patients) and 3571 feature columns (genes).
+    # ==============================================================================
+    # Step 2: Load Data and Establish Baseline
+    # I load the cleaned dataset. It contains 72 patients (our samples) and 
+    # 3,571 genes (our features), labeled as either ALL or AML leukemia.
+    # 
+    # Before training any model, I establish a 'dummy' baseline. This model simply 
+    # guesses the most frequent class (ALL) every single time. It achieves about 65% 
+    # accuracy. This establishes the absolute minimum floor that a real model has 
+    # to beat to prove it is learning actual biological signals.
+    # ==============================================================================
     df = pd.read_csv(data_path)
     X = df.drop(columns=["label"]).values
     y = (df["label"] == "AML").astype(int).values
@@ -68,23 +82,24 @@ def main():
     print(f"Class balance: ALL={np.sum(y==0)}, AML={np.sum(y==1)}")
 
     # Because I only have 72 samples, doing a single 70/30 train/test split would leave 
-    # only ~21 patients in the validation cohort. That is far too few to trust the results;
-    # a lucky or unlucky split would drastically skew the accuracy. 
-    # From my learnings in robust model evaluation, I use 5-fold cross-validation (CV) instead. 
+    # only ~21 patients in the validation cohort. That is far too few to trust the results.
+    # I use 5-fold cross-validation (CV) instead.
     cv = StratifiedKFold(n_splits=args.n_splits, shuffle=True, random_state=args.random_state)
 
-    # --- Baseline ---
-    # Before testing real models, I establish a "dummy" baseline. This model simply guesses 
-    # the most frequent class (ALL) every single time. This establishes the absolute minimum 
-    # floor that a real machine learning model has to beat.
     dummy = DummyClassifier(strategy="most_frequent")
     dummy_scores = cross_val_score(dummy, X, y, cv=cv, scoring="accuracy")
     print(f"\nMajority-class baseline: {dummy_scores.mean():.3f} +/- {dummy_scores.std():.3f}")
 
-    # --- PCA plot ---
-    # We cannot visually plot 3,571 dimensions because of human limitations. 
-    # To check if the ALL and AML patients are naturally separable, I compress all 3,571 genes 
-    # down to 2 dimensions using Principal Component Analysis (PCA) purely for visual inspection.
+
+    # ==============================================================================
+    # Step 3: PCA to 2D for visual inspection
+    # Because of human limitations, we can only visually perceive up to 3 dimensions. 
+    # We cannot plot 3,571 genes on a graph. To overcome this, I use Principal 
+    # Component Analysis (PCA) to compress all 3,571 genes down to 2 dimensions. 
+    # I do this purely for a visual sanity check to see if the ALL and AML patients 
+    # naturally cluster apart based on their gene expressions. I do not train the 
+    # models on this 2D data.
+    # ==============================================================================
     X_scaled = StandardScaler().fit_transform(X)
     pca = PCA(n_components=2, random_state=args.random_state)
     X_pca = pca.fit_transform(X_scaled)
@@ -101,17 +116,25 @@ def main():
     fig.savefig(results_dir / "pca_projection.png", dpi=150)
     plt.close(fig)
 
-    # --- PCA Projection Interpretation ---
-    # Looking at the generated pca_projection.png, we can see that the ALL (blue) and AML (orange)
-    # patients form somewhat distinct clusters, but there is noticeable overlap.
-    # This indicates that while there is strong biological signal, the classes aren't trivially
-    # separable in 2D space. The models will need to leverage the higher-dimensional space.
+    # PCA Projection Interpretation:
+    # Looking at the generated pca_projection.png, we can see that the ALL (blue) 
+    # and AML (orange) patients form somewhat distinct clusters, but there is noticeable 
+    # overlap. This indicates that while there is strong biological signal, the classes 
+    # aren't trivially separable in 2D space. The models will need to leverage the 
+    # higher-dimensional space.
 
-    # --- Model comparison via CV, feature selection inside the pipeline ---
-    # Crucially, as I learned in the 'Intro to Machine Learning' Kaggle course, feature selection MUST 
-    # happen inside the cross-validation pipeline. If I filtered the top genes using the entire 72 
-    # patients *before* splitting, the training folds would have an unfair "sneak peek" at the validation 
-    # cohort data. This is a classic "information leak".
+
+    # ==============================================================================
+    # Step 4 & 5: Setup Pipeline, CV, and Compare Models
+    # Now, I compare a suite of linear models against non-linear models.
+    # 
+    # Identical Preprocessing & Information Leaks:
+    # To ensure a fair, apples-to-apples comparison, I use a scikit-learn `Pipeline`. 
+    # Feature selection (keeping the top 50 genes via ANOVA F-test) MUST happen 
+    # *inside* the cross-validation loop. If I filtered the top 50 genes using the 
+    # entire 72 patients before splitting the data, the training phase would get an 
+    # unfair 'sneak peek' at the validation cohort. This is an information leak.
+    # ==============================================================================
     def make_pipeline(clf):
         return Pipeline([
             ("scale", StandardScaler()),
@@ -134,7 +157,17 @@ def main():
         cv_results[name] = {"mean": float(scores.mean()), "std": float(scores.std()), "folds": scores.tolist()}
         print(f"  {name:25s}  {scores.mean():.3f} +/- {scores.std():.3f}")
 
-    # --- Comparison plot ---
+
+    # ==============================================================================
+    # Step 6 & 7: Plot the comparison & Interpretation
+    # I visualize the cross-validation accuracy of the models using a bar chart.
+    # 
+    # As anticipated, in this high-dimensional p >> n setting, the linear models 
+    # (Logistic Regression, Linear SVM) perform just as well as, or slightly better 
+    # than, the complex non-linear models (MLP). The neural network shows higher 
+    # variance (wider error bars) and lower mean accuracy because its excess capacity 
+    # makes it prone to overfitting the 72 samples.
+    # ==============================================================================
     fig, ax = plt.subplots(figsize=(7, 4))
     names = list(cv_results.keys())
     means = [cv_results[n]["mean"] for n in names]
@@ -150,10 +183,14 @@ def main():
     fig.savefig(results_dir / "model_comparison.png", dpi=150)
     plt.close(fig)
 
-    # --- Save metrics ---
-    # Why is this step important? In any data science pipeline, generating a plot or printing to stdout isn't enough. 
-    # We serialize the exact configurations, CV splits, and final metrics to a JSON file. 
-    # This ensures the experiment is fully reproducible and can be tracked for future reference.
+
+    # ==============================================================================
+    # Step 8: Save all results to disk
+    # Why is this step important? In any data science pipeline, generating a plot 
+    # or printing to stdout isn't enough. We serialize the exact configurations, CV 
+    # splits, and final metrics to a JSON file. This ensures the experiment is fully 
+    # reproducible and can be tracked for future reference.
+    # ==============================================================================
     summary = {
         "dataset": {
             "name": "Golub et al. 1999 leukemia gene expression (ALL vs AML)",
@@ -173,6 +210,9 @@ def main():
 
     print(f"\nSaved plots and metrics.json to: {results_dir.resolve()}")
 
+    # ==============================================================================
+    # Step 9: Final Conclusion
+    # ==============================================================================
     print("\n================ FINAL CONCLUSION ================")
     print("This pipeline successfully demonstrated that non-linearity is not a silver bullet.")
     print("Unlike Project 1, where a linear model failed on 2D synthetic data, here the")
@@ -180,8 +220,6 @@ def main():
     print("Because we had 3,571 genes but only 72 patients (p >> n), the neural network's")
     print("extra capacity caused it to overfit. Always match model complexity to your data!")
     print("==================================================\n")
-
-
 
 if __name__ == "__main__":
     main()

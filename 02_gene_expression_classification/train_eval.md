@@ -1,3 +1,5 @@
+
+```python
 """
 train_eval.py
 
@@ -17,11 +19,13 @@ Usage:
     python train_eval.py --n-features 100 --n-splits 10 --results-dir results
 """
 
-# ==============================================================================
-# Step 1: Import libraries and setup CLI
-# First, I import the necessary libraries for data processing, machine learning 
-# pipelines, and visualization.
-# ==============================================================================
+```
+
+## Step 1: Import libraries and setup CLI
+First, I import the necessary libraries for data processing, machine learning 
+pipelines, and visualization.
+
+```python
 import argparse
 import json
 from pathlib import Path
@@ -223,3 +227,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+```

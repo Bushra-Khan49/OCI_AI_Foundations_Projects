@@ -76,8 +76,7 @@ with the adjustable hidden-layer slider.
   linear-vs-non-linear question on real biological data, where the answer
   is not as clean.
 - Single random seed for the train/test split; not cross-validated (dataset
-  is easy enough that this doesn't change the conclusion, but it's worth
-  being explicit about).
+  is easy enough that this doesn't change the conclusion, but it is important to highlight this explicitly.) 
 
 ## Course context
 

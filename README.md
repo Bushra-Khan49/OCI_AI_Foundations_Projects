@@ -3,7 +3,7 @@
 Hands-on machine learning projects built while working through the Oracle
 Cloud Infrastructure (OCI) AI Foundations Associate course. Each project
 takes a concept from the course and extends it into an actual, evaluated,
-reproducible experiment — not just a completed exercise.
+reproducible experiment.
 
 ## Projects
 

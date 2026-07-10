@@ -1,4 +1,4 @@
-train_eval.py
+# Train and Evaluate Models (train_eval.py)
 
 Standalone, reproducible comparison of linear vs. non-linear classifiers on
 the Golub et al. (1999) leukemia gene expression dataset (ALL vs. AML).

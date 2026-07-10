@@ -1,9 +1,8 @@
 # OCI AI Foundations — Projects
 
-Hands-on machine learning projects built while working through the Oracle
-Cloud Infrastructure (OCI) AI Foundations Associate course. Each project
-takes a concept from the course and extends it into an actual, evaluated,
-reproducible experiment.
+A portfolio of hands-on machine learning and computational biology projects.
+Each project is designed as an actual, evaluated, reproducible scientific 
+pipeline, demonstrating rigorous model evaluation and statistical validation.
 
 ## Projects
 
@@ -45,14 +44,7 @@ pip install -r requirements.txt
 Then either open the `.ipynb` in Jupyter, or run the `.py` script directly —
 see each project's README for exact commands.
 
-## Course background
 
-These projects were built alongside the **Oracle Cloud Infrastructure (OCI)
-AI Foundations Associate** certification (completed November 2025), covering
-AI/ML/DL foundations, generative AI and LLM concepts, and the OCI AI service
-portfolio (Language, Speech, Vision, Document Understanding). Currently
-extending into the **OCI Generative AI Professional** track (RAG with Oracle
-23ai Vector Search, Generative AI Agents).
 
 ## License
 

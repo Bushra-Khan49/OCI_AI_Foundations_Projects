@@ -2,7 +2,7 @@
 train_classifier.py
 
 Standalone, reproducible version of the make_circles classification experiment.
-Unlike the original version, this script:
+This script:
   - splits data into train/test and reports accuracy on held-out data
   - fits a linear baseline (LogisticRegression) alongside the MLP
   - sweeps hidden layer size and records test accuracy at each step

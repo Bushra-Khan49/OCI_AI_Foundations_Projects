@@ -113,9 +113,4 @@ might lead you to expect; the honest comparison is the result.
   useful for the linear-vs-non-linear methodology question it's used for
   here, not as a demonstration of state-of-the-art cancer classification.
 
-## Course context
 
-Extends concepts from the OCI AI Foundations Associate course (Modules 3-4:
-Machine Learning Foundations, Deep Learning Foundations) by testing them
-against real, high-dimensional biological data rather than only the
-synthetic exercise data provided in the course.

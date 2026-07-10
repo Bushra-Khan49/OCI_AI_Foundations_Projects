@@ -2,8 +2,8 @@
 
 In this project, I explore a classic problem in machine learning: understanding the limits of linear models when dealing with non-linear data, and demonstrating how introducing a simple Multi-Layer Perceptron (MLP) neural network solves it.
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Bushra-Khan49/OCI_AI_Foundations_Projects/main?filepath=01_Synthetic_Nonlinear_Classification/01_mlp_make_circles.ipynb)
-*(Note: If you are viewing this via Binder, please run all the cells to set up the environment before experimenting with the interactive decision boundary at the bottom.)*
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Bushra-Khan49/OCI_AI_Foundations_Projects/main?filepath=01_Synthetic_Nonlinear_Classification/01_mlp_make_circles.ipynb) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Bushra-Khan49/OCI_AI_Foundations_Projects/blob/main/01_Synthetic_Nonlinear_Classification/01_mlp_make_circles.ipynb)
+*(Note: If you are viewing this via Binder or Colab, please run all the cells to set up the environment before experimenting with the interactive decision boundary at the bottom.)*
 
 ## Question
 

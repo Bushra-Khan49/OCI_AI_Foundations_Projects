@@ -10,8 +10,8 @@ and statistical validation.
 
 | # | Project | Question | Key result |
 |---|---|---|---|
-| 1 | [Linear vs. MLP on `make_circles`](01_Synthetic_Nonlinear_Classification/) | Does a linear model actually fail on non-linear synthetic data, and does a small neural net actually fix it? | Logistic Regression: 0.456 test accuracy. MLP (≥5 hidden neurons): 1.000. <br> [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Bushra-Khan49/OCI_AI_Foundations_Projects/main?filepath=01_Synthetic_Nonlinear_Classification/01_mlp_make_circles.ipynb) |
-| 2 | [Gene expression classification (Golub leukemia)](02_gene_expression_classification/) | Does the same linear-vs-non-linear finding hold on real, high-dimensional (p≫n) biological data? | See project README — run `train_eval.py` to reproduce; results are not assumed to favor either model. |
+| 1 | [Linear vs. MLP on `make_circles`](01_Synthetic_Nonlinear_Classification/) | Does a linear model actually fail on non-linear synthetic data, and does a small neural net actually fix it? | Logistic Regression: 0.456 test accuracy. MLP (≥5 hidden neurons): 1.000. <br> [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Bushra-Khan49/OCI_AI_Foundations_Projects/main?filepath=01_Synthetic_Nonlinear_Classification/01_mlp_make_circles.ipynb) <br> [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Bushra-Khan49/OCI_AI_Foundations_Projects/blob/main/01_Synthetic_Nonlinear_Classification/01_mlp_make_circles.ipynb) |
+| 2 | [Gene expression classification (Golub leukemia)](02_gene_expression_classification/) | Does the same linear-vs-non-linear finding hold on real, high-dimensional (p≫n) biological data? | See project README — run `train_eval.py` to reproduce; results are not assumed to favor either model. <br> [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Bushra-Khan49/OCI_AI_Foundations_Projects/blob/main/02_gene_expression_classification/02_gene_expression_pipeline.ipynb) |
 
 More projects will be added here as they're completed.
 

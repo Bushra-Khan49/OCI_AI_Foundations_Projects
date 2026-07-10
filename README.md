@@ -12,8 +12,8 @@ reproducible experiment.
 | 1 | [Linear vs. MLP on `make_circles`](01_Building_Classifier/) | Does a linear model actually fail on non-linear synthetic data, and does a small neural net actually fix it? | Logistic Regression: 0.456 test accuracy. MLP (≥5 hidden neurons): 1.000. |
 | 2 | [Gene expression classification (Golub leukemia)](02_gene_expression_classification/) | Does the same linear-vs-non-linear finding hold on real, high-dimensional (p≫n) biological data? | See project README — run `train_eval.py` to reproduce; results are not assumed to favor either model. |
 
-More projects will be added here as they're completed, each following the
-same structure: a stated question, a real evaluation, and saved results.
+More projects will be added here as they're completed.
+
 
 ## Repository structure
 

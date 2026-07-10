@@ -101,6 +101,12 @@ def main():
     fig.savefig(results_dir / "pca_projection.png", dpi=150)
     plt.close(fig)
 
+    # --- PCA Projection Interpretation ---
+    # Looking at the generated pca_projection.png, we can see that the ALL (blue) and AML (orange)
+    # patients form somewhat distinct clusters, but there is noticeable overlap.
+    # This indicates that while there is strong biological signal, the classes aren't trivially
+    # separable in 2D space. The models will need to leverage the higher-dimensional space.
+
     # --- Model comparison via CV, feature selection inside the pipeline ---
     # Crucially, as I learned in the 'Intro to Machine Learning' Kaggle course, feature selection MUST 
     # happen inside the cross-validation pipeline. If I filtered the top genes using the entire 72 

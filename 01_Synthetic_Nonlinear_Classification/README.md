@@ -1,55 +1,78 @@
-# Project 1: Synthetic Non-Linear Classification
+# Project 1: Synthetic Non-Linear Classification (`make_circles`)
 
 In this project, I explore a classic problem in machine learning: understanding the limits of linear models when dealing with non-linear data, and demonstrating how introducing a simple Multi-Layer Perceptron (MLP) neural network solves it.
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Bushra-Khan49/OCI_AI_Foundations_Projects/main?filepath=01_Synthetic_Nonlinear_Classification/01_mlp_make_circles.ipynb)
 *(Note: If you are viewing this via Binder, please run all the cells to set up the environment before experimenting with the interactive decision boundary at the bottom.)*
 
-## The Data and the Problem
+## Question
 
-I used a synthetic dataset called `make_circles` from scikit-learn. This generator creates data points in the shape of two interlocking, concentric circles. By design, you cannot draw a single straight line to separate the inner circle from the outer one. It is a perfectly balanced binary classification problem (50% class 0, 50% class 1), making it ideal for testing a model's ability to warp its decision boundary.
+`make_circles` generates two classes arranged as interlocking circles — a textbook non-linearly-separable dataset. By design, you cannot draw a single straight line to separate the inner circle from the outer one. The claim worth testing: **does a linear model actually fail here, and does a small neural network actually fix it?**
 
-Before modeling, I held out 30% of this data as a **validation cohort**. This is a crucial step; evaluating a model on the same data it learned from leads to a false sense of security due to overfitting. By using an unseen validation cohort, I ensure that the model actually generalizes to new data rather than just memorizing the training set.
+## Method
 
-## Methodology & Identical Preprocessing
+- **Data**: `sklearn.datasets.make_circles(n_samples=300, noise=0.05, factor=0.5)`
+- **Split**: 70/30 train/test, stratified, fixed random seed. 
+  - *Context:* I held out 30% of this data as a **validation cohort**. This is a crucial step; evaluating a model on the same data it learned from leads to a false sense of security due to overfitting. By using an unseen validation cohort, I ensure that the model actually generalizes to new data rather than just memorizing the training set.
+- **Models compared**:
+  - `LogisticRegression` (linear baseline)
+  - `MLPClassifier`, single hidden layer, ReLU, swept over `{1,2,3,5,10,20,50}` neurons
+  - *Context:* Both models were trained and evaluated on the exact same train/validation splits, ensuring an apples-to-apples comparison. We are strictly comparing the architectural capability of the models themselves.
+- **Metric**: accuracy on the held-out test set (not training accuracy)
 
-To prove that a linear model struggles here, I first fit a standard Logistic Regression baseline. Logistic Regression attempts to find a linear decision boundary (a flat plane). 
+## Results
 
-Next, I introduced an MLP neural network. I swept through different hidden layer sizes (from 1 to 50 neurons) to observe how adding capacity allows the network to combine multiple flat boundaries into a smooth, curved shape. 
+| Model | Test accuracy |
+|---|---|
+| Logistic Regression (linear) | 0.456 |
+| MLP, 1 neuron | 0.500 |
+| MLP, 2 neurons | 0.522 |
+| MLP, 3 neurons | 0.678 |
+| MLP, 5 neurons | **1.000** |
+| MLP, 10–50 neurons | 1.000 |
 
-Both models were trained and evaluated on the exact same train/validation splits, ensuring an apples-to-apples comparison. We are strictly comparing the architectural capability of the models themselves.
+(Exact numbers reproduce deterministically — see `results/metrics.json` after running `train_classifier.py` or the notebook.)
 
-## Results & Interpretation
+![accuracy vs hidden size](results/accuracy_vs_hidden_size.png)
+![decision boundary](results/decision_boundary.png)
 
-The automated script (`train_classifier.py`) evaluates the models and saves the metrics and visual outputs.
-
-### Model Comparison
-As expected, the Logistic Regression baseline completely failed. It achieved an accuracy of roughly **45.6%** on the validation cohort—which is effectively no better than random guessing for a balanced dataset. It simply cannot cut a circle with a straight line.
-
-However, as I added neurons to the hidden layer of the MLP, performance drastically improved:
-- **1-2 neurons**: ~50% accuracy (still struggling to enclose the circle).
-- **3 neurons**: ~67.8% accuracy (beginning to form a triangle-like boundary).
-- **5+ neurons**: **100% accuracy**.
-
-The MLP achieved perfect classification on the unseen validation cohort once it had 5 hidden neurons. 
-
-### Visualizing the Decision Boundary
-By mapping a grid of points and plotting the best model's predictions, we can visually see the exact non-linear shape it learned. 
-
-![Decision Boundary](results/decision_boundary.png)
+**Finding:** The linear model performs at essentially chance level (its accuracy is not meaningfully above 0.5 given only 90 test points), while the MLP needs as few as 5 hidden neurons to separate the classes perfectly on held-out data. This is the concrete evidence for the qualitative claim the exercise is built around, rather than an assertion.
 
 *Interpretation*: The image shows the contour map of the neural network's decision space. The inner circle is perfectly encapsulated by the boundary the MLP learned. The model didn't just memorize the points; the smooth, continuous boundary proves it learned the underlying geometric distribution of the data. 
 
-### Why This Matters
-In a real-world, day-to-day context, many relationships are not linear. Whether we are predicting customer churn based on complex behavioral interactions or diagnosing a disease from non-linear biomarkers, using a strictly linear model can lead to total failure (as seen by our 45% baseline). This project demonstrates the power of neural networks to map non-linear spaces, validating why they are the foundation of modern deep learning.
+**Why This Matters:** In a real-world, day-to-day context, many relationships are not linear. Whether we are predicting customer churn based on complex behavioral interactions or diagnosing a disease from non-linear biomarkers, using a strictly linear model can lead to total failure (as seen by our 45% baseline). This project demonstrates the power of neural networks to map non-linear spaces, validating why they are the foundation of modern deep learning.
 
-## Reproducing the Results
+## What's in this folder
+
+```
+01_Synthetic_Nonlinear_Classification/
+  01_mlp_make_circles.ipynb   <- full walkthrough + interactive slider (Jupyter)
+  train_classifier.py         <- CLI script version, no notebook required
+  requirements.txt
+  results/                    <- generated by running either of the above
+    metrics.json
+    accuracy_vs_hidden_size.png
+    decision_boundary.png
+    best_mlp_model.joblib
+```
+
+## Reproducing this
 
 You can reproduce the exact results and generate the plots by running the automated script. I programmed the script to automatically save the metrics to disk for future reference, allowing us to log experiments rigorously.
 
 ```bash
 pip install -r requirements.txt
-python train_classifier.py
+python train_classifier.py                      # default settings
+python train_classifier.py --hidden-sizes 1 5 10 20 --noise 0.1   # custom sweep
 ```
 
-Alternatively, open `01_mlp_make_circles.ipynb` (or click the Binder link above) for an interactive walkthrough.
+or open `01_mlp_make_circles.ipynb` (or click the Binder link above) for an interactive walkthrough.
+
+## Limitations
+
+- `make_circles` is synthetic data with a known ground-truth structure — a clean win for MLP here doesn't generalize to noisier, real-world, higher-dimensional data. Project 2 in this repository tests the same linear-vs-non-linear question on real biological data, where the answer is not as clean.
+- Single random seed for the train/test split; not cross-validated (dataset is easy enough that this doesn't change the conclusion, but it is important to highlight this explicitly.) 
+
+## Course context
+
+This project was built alongside the **Oracle Cloud Infrastructure (OCI) AI Foundations Associate** certification (completed November 2025). The base exercise was taken from the OCI AI Foundations course and extended here with an actual train/test evaluation, pedagogical commentary, and a linear-vs-neural-network comparison.

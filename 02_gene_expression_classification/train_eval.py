@@ -1,8 +1,8 @@
 """
 train_eval.py
 
-In this script, I compare linear and non-linear classifiers on the Golub et al. (1999) 
-leukemia gene expression dataset. 
+Standalone, reproducible comparison of linear vs. non-linear classifiers on
+the Golub et al. (1999) leukemia gene expression dataset (ALL vs. AML).
 
 While Project 1 demonstrated that neural networks easily outperform linear models on 
 synthetic 2D data, biological data is often the exact opposite. With 3,571 genes and only 
@@ -24,7 +24,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import matplotlib
-matplotlib.use("Agg") # Save plots to disk rather than displaying them visually in a window.
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 from sklearn.decomposition import PCA
@@ -71,22 +71,20 @@ def main():
     # only ~21 patients in the validation cohort. That is far too few to trust the results;
     # a lucky or unlucky split would drastically skew the accuracy. 
     # From my learnings in robust model evaluation, I use 5-fold cross-validation (CV) instead. 
-    # This splits the data into 5 chunks, training on 4 and testing on 1, rotating until 
-    # every patient has been in the unseen validation cohort exactly once.
     cv = StratifiedKFold(n_splits=args.n_splits, shuffle=True, random_state=args.random_state)
 
+    # --- Baseline ---
     # Before testing real models, I establish a "dummy" baseline. This model simply guesses 
     # the most frequent class (ALL) every single time. This establishes the absolute minimum 
-    # floor that a real machine learning model has to beat to prove it is actually learning anything.
+    # floor that a real machine learning model has to beat.
     dummy = DummyClassifier(strategy="most_frequent")
     dummy_scores = cross_val_score(dummy, X, y, cv=cv, scoring="accuracy")
     print(f"\nMajority-class baseline: {dummy_scores.mean():.3f} +/- {dummy_scores.std():.3f}")
 
-    # We cannot visually plot 3,571 dimensions because of human limitations (we only see in 3D). 
+    # --- PCA plot ---
+    # We cannot visually plot 3,571 dimensions because of human limitations. 
     # To check if the ALL and AML patients are naturally separable, I compress all 3,571 genes 
-    # down to 2 dimensions using Principal Component Analysis (PCA). 
-    # PCA is a standard, deterministic linear projection. We do this purely for a visual sanity check,
-    # not to train the models on it.
+    # down to 2 dimensions using Principal Component Analysis (PCA) purely for visual inspection.
     X_scaled = StandardScaler().fit_transform(X)
     pca = PCA(n_components=2, random_state=args.random_state)
     X_pca = pca.fit_transform(X_scaled)
@@ -103,13 +101,11 @@ def main():
     fig.savefig(results_dir / "pca_projection.png", dpi=150)
     plt.close(fig)
 
-    # To ensure a fair, apples-to-apples comparison, I use a Pipeline to enforce identical preprocessing 
-    # across all models. Every model gets the exact same standard scaling and feature selection.
-    #
+    # --- Model comparison via CV, feature selection inside the pipeline ---
     # Crucially, as I learned in the 'Intro to Machine Learning' Kaggle course, feature selection MUST 
-    # happen inside the cross-validation pipeline. If I filtered the top 50 genes using the entire 72 
+    # happen inside the cross-validation pipeline. If I filtered the top genes using the entire 72 
     # patients *before* splitting, the training folds would have an unfair "sneak peek" at the validation 
-    # cohort data. This is a classic "information leak" that ruins the validity of the results.
+    # cohort data. This is a classic "information leak".
     def make_pipeline(clf):
         return Pipeline([
             ("scale", StandardScaler()),
@@ -132,8 +128,7 @@ def main():
         cv_results[name] = {"mean": float(scores.mean()), "std": float(scores.std()), "folds": scores.tolist()}
         print(f"  {name:25s}  {scores.mean():.3f} +/- {scores.std():.3f}")
 
-    # Now I create a horizontal bar chart to visually compare the mean cross-validation accuracy 
-    # of the linear models vs the non-linear models.
+    # --- Comparison plot ---
     fig, ax = plt.subplots(figsize=(7, 4))
     names = list(cv_results.keys())
     means = [cv_results[n]["mean"] for n in names]
@@ -149,9 +144,7 @@ def main():
     fig.savefig(results_dir / "model_comparison.png", dpi=150)
     plt.close(fig)
 
-    # Finally, I save the metrics to a JSON file. This allows me or anyone else reviewing the repo 
-    # to reference the exact numeric results and hyperparameter settings for reproducibility without 
-    # needing to re-run the script.
+    # --- Save metrics ---
     summary = {
         "dataset": {
             "name": "Golub et al. 1999 leukemia gene expression (ALL vs AML)",

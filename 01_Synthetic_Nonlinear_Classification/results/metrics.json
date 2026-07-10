@@ -10,37 +10,37 @@
     "random_state": 0,
     "stratify": true
   },
-  "baseline_logistic_regression_validation_accuracy": 0.45555555555555555,
+  "baseline_logistic_regression_test_accuracy": 0.45555555555555555,
   "hidden_layer_sweep": [
     {
       "hidden_layer_size": 1,
-      "validation_accuracy": 0.5
+      "test_accuracy": 0.5
     },
     {
       "hidden_layer_size": 2,
-      "validation_accuracy": 0.5222222222222223
+      "test_accuracy": 0.5222222222222223
     },
     {
       "hidden_layer_size": 3,
-      "validation_accuracy": 0.6777777777777778
+      "test_accuracy": 0.6777777777777778
     },
     {
       "hidden_layer_size": 5,
-      "validation_accuracy": 1.0
+      "test_accuracy": 1.0
     },
     {
       "hidden_layer_size": 10,
-      "validation_accuracy": 1.0
+      "test_accuracy": 1.0
     },
     {
       "hidden_layer_size": 20,
-      "validation_accuracy": 1.0
+      "test_accuracy": 1.0
     },
     {
       "hidden_layer_size": 50,
-      "validation_accuracy": 1.0
+      "test_accuracy": 1.0
     }
   ],
   "best_hidden_layer_size": 5,
-  "best_validation_accuracy": 1.0
+  "best_test_accuracy": 1.0
 }

@@ -21,12 +21,15 @@ More projects will be added here as they're completed.
 Each project is self-contained:
 ```
 <NN>_project_name/
-  README.md            <- question, method, results, how to reproduce
-  *.ipynb               <- interactive notebook version
-  *.py                  <- CLI script version (no notebook required)
-  requirements.txt       <- project-specific dependencies
-  data/                  <- present only if the project needs external data
-  results/               <- metrics.json + plots, committed as proof of output
+  README.md                  <- question, method, results, how to reproduce
+  *.ipynb                    <- interactive notebook version
+  *.py                       <- CLI script version (no notebook required)
+  requirements.txt           <- project-specific dependencies
+  data/                      <- download scripts (e.g., download_data.py) and raw datasets
+  results/
+    metrics.json             <- statistical output and experiment configurations
+    *.png                    <- generated plots and visual outputs
+    results_and_conclusions.md <- detailed report explaining the final outcome
 ```
 
 ## Setup

@@ -34,7 +34,8 @@ SOURCE_URL = "http://hastie.su.domains/CASI_files/DATA/leukemia_small.csv"
 
 def parse_args():
     p = argparse.ArgumentParser(description="Download and clean the Golub leukemia dataset.")
-    p.add_argument("--out-path", type=str, default="leukemia_clean.csv",
+    default_out = Path(__file__).parent / "leukemia_clean.csv"
+    p.add_argument("--out-path", type=str, default=str(default_out),
                     help="Where to save the cleaned (samples x genes + label) CSV.")
     p.add_argument("--url", type=str, default=SOURCE_URL,
                     help="Source URL for the raw leukemia_small.csv file.")

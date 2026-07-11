@@ -1,28 +1,27 @@
-# Train Classifier (train_classifier.py)
+# # Train Classifier (train_classifier.py)
 
-Standalone, reproducible version of the make_circles classification experiment.
+# Standalone, reproducible version of the make_circles classification experiment.
 
-**Note:** This file represents the standalone Python script `train_classifier.py` converted into a Markdown walkthrough. While the Jupyter Notebook (`01_mlp_make_circles.ipynb`) is designed for interactive data exploration and step-by-step visualization, this script is structured for automated, reproducible command-line execution (e.g., using `argparse` for parameter sweeps and saving artifacts to a results directory). Both share the same underlying logic.
+# **Note:** This file represents the standalone Python script `train_classifier.py` converted into a Markdown walkthrough. While the Jupyter Notebook (`01_mlp_make_circles.ipynb`) is designed for interactive data exploration and step-by-step visualization, this script is structured for automated, reproducible command-line execution (e.g., using `argparse` for parameter sweeps and saving artifacts to a results directory). Both share the same underlying logic.
 
-Unlike the original version, this script:
-  - splits data into train/test and reports accuracy on held-out data
-  - fits a linear baseline (LogisticRegression) alongside the MLP
-  - sweeps hidden layer size and records test accuracy at each step
-  - saves a trained model, plots, and a metrics.json file to `--results-dir`
+# Unlike the original version, this script:
+#   - splits data into train/test and reports accuracy on held-out data
+#   - fits a linear baseline (LogisticRegression) alongside the MLP
+#   - sweeps hidden layer size and records test accuracy at each step
+#   - saves a trained model, plots, and a metrics.json file to `--results-dir`
 
-In this project, I explore the limits of linear models when dealing with non-linear data, 
-and demonstrate how introducing a simple Multi-Layer Perceptron (MLP) neural network solves it.
+# In this project, I explore the limits of linear models when dealing with non-linear data, 
+# and demonstrate how introducing a simple Multi-Layer Perceptron (MLP) neural network solves it.
 
-**Usage:**
-```bash
-python train_classifier.py
-python train_classifier.py --hidden-sizes 1 5 10 20 50 --noise 0.05 --results-dir results
-```
+# **Usage:**
+# ```bash
+# python train_classifier.py
+# python train_classifier.py --hidden-sizes 1 5 10 20 50 --noise 0.05 --results-dir results
+# ```
 
-## Step 1: Import libraries and setup CLI
-First, I import the necessary libraries for data processing, machine learning models, and visualization. I also set up `argparse` to allow running this script from the terminal with custom hyperparameters, making it highly reproducible.
+# ## Step 1: Import libraries and setup CLI
+# First, I import the necessary libraries for data processing, machine learning models, and visualization. I also set up `argparse` to allow running this script from the terminal with custom hyperparameters, making it highly reproducible.
 
-```python
 # Import argparse for CLI usage
 import argparse
 # Import json for saving metrics
@@ -75,24 +74,20 @@ def main():
     # Create the results directory if it doesn't already exist
     results_dir = Path(args.results_dir)
     results_dir.mkdir(parents=True, exist_ok=True)
-```
 
-## Step 2: Generating Data
-`make_circles` generates data points in the shape of two interlocking, concentric circles. By design, you cannot draw a single straight line to separate the inner circle from the outer one. This synthetic dataset perfectly isolates the concept of linear vs. non-linear separability.
+# ## Step 2: Generating Data
+# `make_circles` generates data points in the shape of two interlocking, concentric circles. By design, you cannot draw a single straight line to separate the inner circle from the outer one. This synthetic dataset perfectly isolates the concept of linear vs. non-linear separability.
 
-```python
     print("Generating dataset...")
     # Generate data points in the shape of two concentric circles with slight noise
     X, y = make_circles(
         n_samples=args.n_samples, noise=args.noise, factor=args.factor,
         random_state=args.random_state,
     )
-```
 
-## Step 3: Validation Cohort
-I hold out a portion of this data as a validation cohort. Evaluating a model on the same data it learned from leads to a false sense of security due to overfitting. We must strictly measure performance on data the model has never seen before.
+# ## Step 3: Validation Cohort
+# I hold out a portion of this data as a validation cohort. Evaluating a model on the same data it learned from leads to a false sense of security due to overfitting. We must strictly measure performance on data the model has never seen before.
 
-```python
     # Hold out a portion of the data for testing, stratifying by class to maintain balance
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=args.test_size, random_state=args.random_state, stratify=y,
@@ -100,12 +95,10 @@ I hold out a portion of this data as a validation cohort. Evaluating a model on 
     
     # Print the size of our training and testing cohorts to stdout
     print(f"Train: {len(X_train)} samples | Test: {len(X_test)} samples")
-```
 
-## Step 4: Linear Baseline
-I fit a standard Logistic Regression baseline. Logistic Regression attempts to find a linear decision boundary (a flat plane). Because our data is circular, we expect this model to fail entirely, achieving roughly 50% (random guess) accuracy.
+# ## Step 4: Linear Baseline
+# I fit a standard Logistic Regression baseline. Logistic Regression attempts to find a linear decision boundary (a flat plane). Because our data is circular, we expect this model to fail entirely, achieving roughly 50% (random guess) accuracy.
 
-```python
     print("\nFitting linear baseline (LogisticRegression)...")
     
     # Initialize a standard Logistic Regression model (linear decision boundary)
@@ -118,12 +111,10 @@ I fit a standard Logistic Regression baseline. Logistic Regression attempts to f
     
     # Print the baseline accuracy (expected to be around 50% since data is circular)
     print(f"  Baseline test accuracy: {baseline_acc:.3f}")
-```
 
-## Step 5: MLP Sweep
-Next, I introduce an MLP neural network. I sweep through different hidden layer sizes to observe how adding capacity allows the network to combine multiple flat boundaries into a smooth, curved shape. Both models use the exact same validation splits for a fair, apples-to-apples comparison.
+# ## Step 5: MLP Sweep
+# Next, I introduce an MLP neural network. I sweep through different hidden layer sizes to observe how adding capacity allows the network to combine multiple flat boundaries into a smooth, curved shape. Both models use the exact same validation splits for a fair, apples-to-apples comparison.
 
-```python
     print("\nSweeping MLP hidden layer size...")
     # Initialize an empty list to store the results of our sweep
     sweep_results = []
@@ -155,12 +146,10 @@ Next, I introduce an MLP neural network. I sweep through different hidden layer 
     # Print a detailed classification report to see precision, recall, and f1-score
     print("\nClassification report for best model:")
     print(classification_report(y_test, best_clf.predict(X_test)))
-```
 
-## Step 6: Plot 1 - Accuracy vs. hidden layer size
-We plot the performance curve to visually inspect how accuracy improves as we add neurons to the network's hidden layer. As expected, a single neuron performs as poorly as the linear baseline, but as capacity increases, the network quickly learns to wrap around the data perfectly.
+# ## Step 6: Plot 1 - Accuracy vs. hidden layer size
+# We plot the performance curve to visually inspect how accuracy improves as we add neurons to the network's hidden layer. As expected, a single neuron performs as poorly as the linear baseline, but as capacity increases, the network quickly learns to wrap around the data perfectly.
 
-```python
     # Extract the hidden layer sizes for the X-axis
     sizes = [r["hidden_layer_size"] for r in sweep_results]
     # Extract the corresponding test accuracies for the Y-axis
@@ -187,14 +176,12 @@ We plot the performance curve to visually inspect how accuracy improves as we ad
     # Save the figure to the results directory
     fig.savefig(results_dir / "accuracy_vs_hidden_size.png", dpi=150)
     plt.close(fig)
-```
 
-![Accuracy Curve](results/accuracy_vs_hidden_size.png)
+# ![Accuracy Curve](results/accuracy_vs_hidden_size.png)
 
-## Step 7: Plot 2 - Decision boundary for the best model
-By mapping a dense grid of points across the feature space and plotting the best model's predictions, we can visually inspect the exact non-linear shape it learned. The neural network successfully carves out a curved boundary to separate the inner ring from the outer ring!
+# ## Step 7: Plot 2 - Decision boundary for the best model
+# By mapping a dense grid of points across the feature space and plotting the best model's predictions, we can visually inspect the exact non-linear shape it learned. The neural network successfully carves out a curved boundary to separate the inner ring from the outer ring!
 
-```python
     # Create a dense grid of points across the feature space for visualization
     x_vals = np.linspace(X[:, 0].min() - 0.1, X[:, 0].max() + 0.1, 200)
     y_vals = np.linspace(X[:, 1].min() - 0.1, X[:, 1].max() + 0.1, 200)
@@ -224,14 +211,12 @@ By mapping a dense grid of points across the feature space and plotting the best
     # Save the decision boundary plot to disk
     fig.savefig(results_dir / "decision_boundary.png", dpi=150)
     plt.close(fig)
-```
 
-![Decision Boundary](results/decision_boundary.png)
+# ![Decision Boundary](results/decision_boundary.png)
 
-## Step 8: Save model & metrics
-We save the best trained neural network object (`.joblib`) to disk so it can be loaded into an API or production service later without retraining. We also serialize the experimental parameters and test metrics to `metrics.json` to ensure this run is permanently tracked and perfectly reproducible.
+# ## Step 8: Save model & metrics
+# We save the best trained neural network object (`.joblib`) to disk so it can be loaded into an API or production service later without retraining. We also serialize the experimental parameters and test metrics to `metrics.json` to ensure this run is permanently tracked and perfectly reproducible.
 
-```python
     # Serialize the best scikit-learn model object to disk using joblib
     joblib.dump(best_clf, results_dir / "best_mlp_model.joblib")
 
@@ -268,4 +253,3 @@ print("==================================================\n")
 # Boilerplate execution guard to allow the script to be imported safely without executing main()
 if __name__ == "__main__":
     main()
-```
